@@ -13,8 +13,6 @@ import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import EditModal from './editModal';
 
-
-
 export default function App() {
   const [users, setUsers] = useState([]);
   const [open,setOpen]=useState(false);
