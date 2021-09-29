@@ -11,14 +11,23 @@ import Paper from '@mui/material/Paper';
 import Box from '@material-ui/core/Box';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
+import EditModal from './editModal';
+
 
 
 export default function App() {
   const [users, setUsers] = useState([]);
+  const [open,setOpen]=useState(false);
+  const [obj, setObj] = useState();
+  const [temp, setTemp] = useState(true);
+
 
   useEffect(()=>{
-    fetchData();
-  },[]);
+    if(temp) {
+      fetchData()
+      .then(() => setTemp(false));
+    }
+  },[temp]);
   
   const fetchData = async () => {
     await fetch("https://jsonplaceholder.typicode.com/users")
@@ -81,8 +90,24 @@ export default function App() {
       });
   };
 
+  const onClickEdit = (obj) => {
+    setOpen(!open);
+    setObj(obj);
+  };
+
+  const handleOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+ 
+
   return (
     <div style={{width:'100%'}}>
+      <EditModal obj={obj} open={open} handleClose={handleClose} handleOpen={handleOpen} users={users} setUsers={setUsers} />
           <Box
                 display="flex"
                 flexWrap="wrap"
@@ -118,18 +143,17 @@ export default function App() {
                     <TableCell align="right">{row.phone}</TableCell>
                     <TableCell align="right">{row.website}</TableCell>
                     <TableCell align="right"><Button variant="contained" onClick={()=>handleDelete(row.id)}>Delete</Button></TableCell>
+                    <TableCell align="right"><Button variant="outlined" onClick={() => onClickEdit(row)}>Edit</Button></TableCell>
                   </TableRow>
                 ))}
               </TableBody>
             </Table>
           </TableContainer>
                   <div style={{ width: '100%' }}>
-              <Box sx={{ display: 'flex', p: 5, m:2, bgcolor: 'white' }}>
+              <Box sx={{ display: 'flex', p: 4, m:1, bgcolor: 'white' }}>
                           <Stack spacing={2} direction="row">
                   <br/>
                   <UserModal onAdd={onAdd} />
-                  <Button variant="outlined">Edit User</Button>
-                  <Button variant="contained">Update User</Button>
                 </Stack>
               </Box>
             </div>
